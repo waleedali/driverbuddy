@@ -6,7 +6,9 @@ from datetime import *
 sc = SparkContext(appName="DriverBuddy")
 sqlContext = SQLContext(sc)
 
-taxiData = sc.textFile("/tmp/data/nyc_taxi_data_2014.csv")
+
+# Load the large csv file into an rdd
+taxiData = sc.textFile("/tmp/data/xaf")
 schemaString = taxiData.first()
 
 # Start by having all fields of type string
@@ -68,7 +70,11 @@ taxiDataFrame.registerTempTable("trips")
 now = datetime.now()
 
 for hour in range(24):
-  trips = sqlContext.sql("SELECT pickup_datetime, pickup_longitude, pickup_latitude, trip_distance FROM trips where month(pickup_datetime) = " + str(now.month)
-                         + " and day(pickup_datetime) = " + str(now.day)
+  # trips = sqlContext.sql("SELECT pickup_datetime, pickup_longitude, pickup_latitude, trip_distance FROM trips where month(pickup_datetime) = " + str(now.month)
+  #                        + " and day(pickup_datetime) = " + str(now.day)
+  #                        + " and hour(pickup_datetime) = " + str(hour))
+  trips = sqlContext.sql("SELECT pickup_datetime, pickup_longitude, pickup_latitude, trip_distance FROM trips where month(pickup_datetime) = " + str(4)
+                         + " and day(pickup_datetime) = " + str(25)
                          + " and hour(pickup_datetime) = " + str(hour))
-  trips.write.save("/tmp/data/trips" + str(hour), format="json")
+  if trips.count() > 0:
+    trips.write.save("/tmp/data/trips" + str(hour), format="json")

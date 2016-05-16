@@ -47,3 +47,10 @@ worker:
   volumes:
     - ./conf/worker:/conf
     - ./data:/tmp/data
+
+rstudio:
+  image: rocker/hadleyverse
+  ports:
+    - 8787:8787
+  volumes:
+    - ./data:/tmp/data
